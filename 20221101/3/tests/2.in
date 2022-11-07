@@ -1,0 +1,12 @@
+a = Grange(1, 7, 10000000)
+b = Grange(1, 4, 1)
+c = Grange(1, 5, 4)
+print(len(b[1:1000]))
+print(len(a), *list(a))
+print(len(c[1:1111111:2]))
+if bool(b):
+	print('There is b')
+else:
+	print('Who stole the b!?')
+print(b, *list(b), c, *list(c))
+print(a[7])

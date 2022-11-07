@@ -1,0 +1,11 @@
+a = Grange(2, 3, 100000)
+b = Grange(1, 4, 100500)
+c = Grange(3, 5, 123456789)
+print(len(a) + len(b) + len(c))
+if bool(a[1:1]):
+	print('bad boy')
+else:
+	print('good boy')
+print(c, c[0], c[6], c[10])
+print(*list(b[4:10005]))
+print(a[6:19999:2], *list(a[6:19999:2]))
