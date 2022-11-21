@@ -1,0 +1,22 @@
+try:
+	alp = Alpha(abc=903)
+except AttributeError:
+	print('Well done')	
+alp = Alpha(a=9, b=0, c=3)
+try:
+	alp.stp = 123
+except AttributeError:
+	print('Well done')
+alp.s, alp.t, alp.p = 1, 2, 3
+print(alp)
+try:
+	alp = AlphaQ(abc=903)
+except AttributeError:
+	print('Well done')	
+alp = AlphaQ(a=9, b=0, c=3)
+try:
+	alp.stp = 123
+except AttributeError:
+	print('Well done')
+alp.s, alp.t, alp.p = 1, 2, 3
+print(alp)

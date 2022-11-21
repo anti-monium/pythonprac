@@ -1,0 +1,26 @@
+import time
+start_time_slots = time.time()
+alp = Alpha()
+for i in range(100000):
+	for c in alph:
+		setattr(alp, c, i // ord(c))
+s = 0
+for i in range(100000):
+	for c in alph:
+		s += getattr(alp, c) % ord(c)
+print(s)
+time_slots = time.time() - start_time_slots
+
+start_time_no_slots = time.time()
+alq = AlphaQ()
+for i in range(100000):
+	for c in alph:
+		setattr(alq, c, i // ord(c))
+s = 0
+for i in range(100000):
+	for c in alph:
+		s += getattr(alq, c) % ord(c)
+print(s)
+time_no_slots = time.time() - start_time_no_slots
+
+print(time_slots < time_no_slots)
