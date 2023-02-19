@@ -33,22 +33,36 @@ def tree(tree_hash):
             obj_type = 'blob'
         print(obj_type, obj_num, obj_name.decode())
         
+def parent(parent_hash):
+    parent_data = commit(parent_hash)
+    print("TREE for commit ", parent_hash)
+    print('*********', *parent_data, '*********', sep='\n')
+    tree(parent_data[0].split()[1])
+    if parent_data[1].split()[0] == 'parent':
+        try:
+            parent(parent_data[1].split()[1])
+        except:
+            pass
 
-
+print("\n***ПУНКТ 1***")
 for brunch in iglob('/home/maria/pythonprac/.git/refs/heads/*', recursive=True):
     print(brunch)
     brunch_name = brunch.split('/')[-1]
     print(brunch_name)
     
 br_name = '/home/maria/pythonprac/.git/refs/heads/' + input()
+print("\n***ПУНКТ 2***")
 commit_hash = open(br_name, 'r').read()
 commit_data = commit(commit_hash)
 print(*commit_data, sep='\n')
 
+print("\n***ПУНКТ 3***")
 tree_hash = commit_data[0].split()[1]
 tree(tree_hash)
     
+print("\n***ПУНКТ 4***")
+print("TREE for commit ", commit_hash)
+tree_hash = commit_data[0].split()[1]
+tree(tree_hash)   
 parent_hash = commit_data[1].split()[1]
-parent_file = '/home/maria/pythonprac/.git/objects/' + parent_hash[0:2] + '/' + parent_hash[2:].replace('\n', '')
-parent_data = zlib.decompress(open(parent_file, 'rb').read())
-print(parent_data)
+parent(parent_hash)
