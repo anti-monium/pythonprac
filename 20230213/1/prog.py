@@ -1,5 +1,6 @@
 from glob import iglob
 import zlib
+import sys
 
 def commit(commit_hash):
     commit_file = '/home/maria/pythonprac/.git/objects/' + commit_hash[0:2] + '/' + commit_hash[2:].replace('\n', '')
@@ -36,7 +37,6 @@ def tree(tree_hash):
 def parent(parent_hash):
     parent_data = commit(parent_hash)
     print("TREE for commit ", parent_hash)
-    print('*********', *parent_data, '*********', sep='\n')
     tree(parent_data[0].split()[1])
     if parent_data[1].split()[0] == 'parent':
         try:
@@ -44,25 +44,28 @@ def parent(parent_hash):
         except:
             pass
 
-print("\n***ПУНКТ 1***")
-for brunch in iglob('/home/maria/pythonprac/.git/refs/heads/*', recursive=True):
-    print(brunch)
-    brunch_name = brunch.split('/')[-1]
-    print(brunch_name)
-    
-br_name = '/home/maria/pythonprac/.git/refs/heads/' + input()
-print("\n***ПУНКТ 2***")
-commit_hash = open(br_name, 'r').read()
-commit_data = commit(commit_hash)
-print(*commit_data, sep='\n')
+try:
+    param = sys.argv[1]
+except:
+    print("***ПУНКТ 1***")
+    for brunch in iglob('/home/maria/pythonprac/.git/refs/heads/*', recursive=True):
+        print(brunch)
+        brunch_name = brunch.split('/')[-1]
+        print(brunch_name)
+else:
+    br_name = '/home/maria/pythonprac/.git/refs/heads/' + param
+    print("***ПУНКТ 2***")
+    commit_hash = open(br_name, 'r').read()
+    commit_data = commit(commit_hash)
+    print(*commit_data, sep='\n')
 
-print("\n***ПУНКТ 3***")
-tree_hash = commit_data[0].split()[1]
-tree(tree_hash)
+    print("\n***ПУНКТ 3***")
+    tree_hash = commit_data[0].split()[1]
+    tree(tree_hash)
     
-print("\n***ПУНКТ 4***")
-print("TREE for commit ", commit_hash[:len(commit_hash) - 1])
-tree_hash = commit_data[0].split()[1]
-tree(tree_hash)   
-parent_hash = commit_data[1].split()[1]
-parent(parent_hash)
+    print("\n***ПУНКТ 4***")
+    print("TREE for commit ", commit_hash[:len(commit_hash) - 1])
+    tree_hash = commit_data[0].split()[1]
+    tree(tree_hash)   
+    parent_hash = commit_data[1].split()[1]
+    parent(parent_hash)
