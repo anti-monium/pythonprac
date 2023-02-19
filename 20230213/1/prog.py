@@ -61,7 +61,7 @@ tree_hash = commit_data[0].split()[1]
 tree(tree_hash)
     
 print("\n***ПУНКТ 4***")
-print("TREE for commit ", commit_hash)
+print("TREE for commit ", commit_hash[:len(commit_hash) - 1])
 tree_hash = commit_data[0].split()[1]
 tree(tree_hash)   
 parent_hash = commit_data[1].split()[1]
