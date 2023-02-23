@@ -25,7 +25,7 @@ class Monster:
         
 
 def encounter(x, y):
-    print(cowsay.cowsay(field[y][x].hello))
+    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
 
 
 g = Gamer()
