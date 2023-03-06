@@ -1,4 +1,5 @@
 import cowsay
+import shlex
 
 n = 10
 field = [[0 for i in range(n)] for j in range(n)]
@@ -35,7 +36,7 @@ def encounter(x, y):
 print("<<< Welcome to Python-MUD 0.1 >>>")
 g = Gamer()
 while True:
-    s = input().split()
+    s = shlex.split(input())
     match s:
         case [('up' | 'down' | 'left' | 'right')]:
             g.move_to(s[0])
