@@ -29,6 +29,7 @@ def encounter(x, y, name):
     print(cowsay.cowsay(field[y][x].hello))
 
 
+print("<<< Welcome to Python-MUD 0.1 >>>")
 g = Gamer()
 while True:
     s = input().split()
