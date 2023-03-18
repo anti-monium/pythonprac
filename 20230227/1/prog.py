@@ -19,14 +19,17 @@ class Gamer:
 
   
 class Monster:
-    def __init__(self, x, y, s):
-        self.hello = s
+    def __init__(self, x, y, hello, name):
+        self.hello = hello
+        self.name = name
         
 
-def encounter(x, y, name):
-    if name == 'jgsbat':
+def encounter(x, y):
+    if field[y][x].name == 'jgsbat':
         name = cowsay.read_dot_cow(open('jgsbat.cow', 'r'))
-    print(cowsay.cowsay(field[y][x].hello))
+    	print(cowsay.cowsay(field[y][x].hello, cow=name))
+    else:
+	print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
 
 
 print("<<< Welcome to Python-MUD 0.1 >>>")
@@ -41,15 +44,17 @@ while True:
                 encounter(g.x, g.y)
         case ['addmon', *opt]:
             try:
-                x, y, hello = int(opt[0]), int(opt[1]), opt[2]
+                name, x, y, hello = opt[0], int(opt[1]), int(opt[2]), opt[3]
                 _ = field[y][x]
             except:
                 print('Invalid arguments')
                 continue
-            print(f"Added monster to ({x}, {y}) saying {hello}")
+            if name not in cowsay.list_cows():
+                print('Cannot add unknown monster')
+                continue
+            print(f"Added monster {name} to ({x}, {y}) saying {hello}")
             if field[y][x]:
                 print('Replaced the old monster')
-                continue
-            field[y][x] = Monster(x, y, hello)
+            field[y][x] = Monster(x, y, hello, name)
         case _:
             print('Invalid command')
