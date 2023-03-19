@@ -96,18 +96,29 @@ class Dangeon(cmd.Cmd):
         if not field[g.y][g.x]:
             print('No monster here')
             return
+        arg = shlex.split(arg)
         monster = field[g.y][g.x]
-        if monster.hp >= 10:
-            damage = 10
-        else:
-            damage = monster.hp
-        monster.hp -= damage
-        print(f'Attacked {monster.name}, damage {damage} hp')
-        if monster.hp == 0:
-            print(f'{monster.name} died')
-            field[g.y][g.x] = 0
-        else:
-            print(f'{monster.name} now has {monster.hp}')
-
+        if len(arg) == 1 and arg[0] != monster.name:
+            print(f'No {arg[0]} here')
+            return
+        if len(arg) == 0 or len(arg) == 1:
+            if monster.hp >= 10:
+                damage = 10
+            else:
+                damage = monster.hp
+            monster.hp -= damage
+            print(f'Attacked {monster.name}, damage {damage} hp')
+            if monster.hp == 0:
+                print(f'{monster.name} died')
+                field[g.y][g.x] = 0
+            else:
+                print(f'{monster.name} now has {monster.hp}')
+                
+    def complete_attack(self, prefix, line, start, end):
+        line = shlex.split(line)
+        if len(line) == 2:
+            return [name for name in cowsay.list_cows() + custom_cows
+                    if name.startswith(prefix)]
+                
 
 Dangeon(completekey='tab').cmdloop()
