@@ -20,9 +20,10 @@ class Gamer:
 
   
 class Monster:
-    def __init__(self, x, y, s, name):
-        self.hello = s
+    def __init__(self, name, x, y, s, hp):
         self.name = name
+        self.hello = s
+        self.hp = hp
         
 
 def encounter(x, y):
@@ -69,6 +70,6 @@ while True:
             print(f"Added monster {name} to ({x}, {y}) saying {hello}")
             if field[y][x]:
                 print('Replaced the old monster')
-            field[y][x] = Monster(x, y, hello, name)
+            field[y][x] = Monster(name, x, y, hello, hp)
         case _:
             print('Invalid command')
