@@ -103,6 +103,11 @@ class Dangeon(cmd.Cmd):
             damage = monster.hp
         monster.hp -= damage
         print(f'Attacked {monster.name}, damage {damage} hp')
+        if monster.hp == 0:
+            print(f'{monster.name} died')
+            field[g.y][g.x] = 0
+        else:
+            print(f'{monster.name} now has {monster.hp}')
 
 
 Dangeon(completekey='tab').cmdloop()
