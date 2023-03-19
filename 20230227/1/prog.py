@@ -3,6 +3,7 @@ import shlex
 
 n = 10
 field = [[0 for i in range(n)] for j in range(n)]
+custom_cows = ['jgsbat']
 
 class Gamer:
     x = 0
@@ -29,9 +30,9 @@ class Monster:
 def encounter(x, y):
     if field[y][x].name == 'jgsbat':
         name = cowsay.read_dot_cow(open('jgsbat.cow', 'r'))
-    	print(cowsay.cowsay(field[y][x].hello, cow=name))
+        print(cowsay.cowsay(field[y][x].hello, cowfile=name))
     else:
-	print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
+	    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
 
 
 print("<<< Welcome to Python-MUD 0.1 >>>")
@@ -69,7 +70,7 @@ while True:
             except:
                 print('Invalid arguments')
                 continue
-            if name not in cowsay.list_cows():
+            if name not in cowsay.list_cows() and name not in custom_cows:
                 print('Cannot add unknown monster')
                 continue
             print(f"Added monster {name} to ({x}, {y}) saying {hello}")
