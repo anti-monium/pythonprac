@@ -19,6 +19,9 @@ class Gamer:
             self.y = (self.y - 1) % n
         elif s == 'right':
             self.y = (self.y + 1) % n
+        print(f'Moved to ({self.x}, {self.y})')
+        if field[self.y][self.x]:
+            encounter(self.x, self.y)
                   
 g = Gamer()
 
@@ -42,16 +45,16 @@ class Dangeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>>\t'
     def do_up(self, arg):
-        pass
+        g.move_to('up')
     
     def do_down(self, arg):
-        pass
+        g.move_to('down')
     
     def do_left(self, arg):
-        pass
+        g.move_to('left')
     
     def do_right(self, arg):
-        pass
+        g.move_to('right')
     
     def do_addmon(self, arg):
         pass
@@ -63,11 +66,6 @@ Dangeon(completekey='tab').cmdloop()
 while True:
     s = shlex.split(input())
     match s:
-        case [('up' | 'down' | 'left' | 'right')]:
-            g.move_to(s[0])
-            print(f'Moved to ({g.x}, {g.y})')
-            if field[g.y][g.x]:
-                encounter(g.x, g.y)
         case ['addmon', *opt]:
             if (len(opt) < 8 or 'hello' not in opt 
                 or 'hp' not in opt or 'coords' not in opt):
