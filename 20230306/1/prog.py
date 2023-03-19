@@ -101,7 +101,7 @@ class Dangeon(cmd.Cmd):
         if len(arg) == 1 and arg[0] != monster.name:
             print(f'No {arg[0]} here')
             return
-        if len(arg) == 0 or len(arg) == 1:
+        if len(arg) < 2:
             if monster.hp >= 10:
                 damage = 10
             else:
