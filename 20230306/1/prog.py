@@ -96,18 +96,25 @@ class Dangeon(cmd.Cmd):
         if not field[g.y][g.x]:
             print('No monster here')
             return
-        monster = field[g.y][g.x]
-        if monster.hp >= 10:
-            damage = 10
-        else:
-            damage = monster.hp
-        monster.hp -= damage
-        print(f'Attacked {monster.name}, damage {damage} hp')
-        if monster.hp == 0:
-            print(f'{monster.name} died')
-            field[g.y][g.x] = 0
-        else:
-            print(f'{monster.name} now has {monster.hp}')
+        arg = shlex.split(arg)
+        if len(arg) == 0:
+            monster = field[g.y][g.x]
+            if monster.hp >= 10:
+                damage = 10
+            else:
+                damage = monster.hp
+            monster.hp -= damage
+            print(f'Attacked {monster.name}, damage {damage} hp')
+            if monster.hp == 0:
+                print(f'{monster.name} died')
+                field[g.y][g.x] = 0
+            else:
+                print(f'{monster.name} now has {monster.hp}')
+        elif len(arg) == 2:
+            if arg[0] != 'with':
+                print('Invalid arguments')
+                return
+            
 
 
 Dangeon(completekey='tab').cmdloop()
