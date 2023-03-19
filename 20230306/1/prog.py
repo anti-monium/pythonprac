@@ -97,6 +97,10 @@ class Dangeon(cmd.Cmd):
             print('No monster here')
             return
         arg = shlex.split(arg)
+        monster = field[g.y][g.x]
+        if len(arg) == 1 and arg[0] != monster.name:
+            print(f'No {arg[0]} here')
+            return
         if len(arg) == 0:
             damage = 10
         elif len(arg) == 2:
@@ -113,7 +117,6 @@ class Dangeon(cmd.Cmd):
                 case _:
                     print('Unknown weapon')
                     return
-        monster = field[g.y][g.x]
         if monster.hp < damage:
             damage = monster.hp
         monster.hp -= damage
@@ -126,11 +129,14 @@ class Dangeon(cmd.Cmd):
             
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
-        if len(line) == 2 and 'with'.startswith(prefix):
+        elif len(line) >= 2 and 'with'.startswith(prefix):
             return ['with']
-        elif len(line) == 3:
+        elif len(line) >= 3 and line[-2] == 'with':
             return [weapon for weapon in ['sword', 'spear', 'axe']
                     if weapon.startswith(prefix)]
-
+        else:
+            return [name for name in cowsay.list_cows() + custom_cows
+                    if name.startswith(prefix)]
+                    
 
 Dangeon(completekey='tab').cmdloop()
