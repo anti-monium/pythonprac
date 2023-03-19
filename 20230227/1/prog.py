@@ -39,8 +39,26 @@ while True:
             if field[g.y][g.x]:
                 encounter(g.x, g.y)
         case ['addmon', *opt]:
+            if (len(opt) < 8 or 'hello' not in opt 
+                or 'hp' not in opt or 'coords' not in opt):
+                print('Invalid arguments')
+                continue
             try:
-                name, x, y, hello = opt[0], int(opt[1]), int(opt[2]), opt[3]
+                name = opt[0]
+                i = 1
+                while i < len(opt):
+                    if opt[i] == 'hello':
+                        hello = opt[i + 1]
+                        i += 2
+                    elif opt[i] == 'hp':
+                        hp = int(opt[i + 1])
+                        i += 2
+                    elif opt[i] == 'coords':
+                        x = int(opt[i + 1])
+                        y = int(opt[i + 2])
+                        i += 3
+                    else:
+                        raise
                 _ = field[y][x]
             except:
                 print('Invalid arguments')
@@ -51,7 +69,6 @@ while True:
             print(f"Added monster {name} to ({x}, {y}) saying {hello}")
             if field[y][x]:
                 print('Replaced the old monster')
-                #continue
             field[y][x] = Monster(x, y, hello, name)
         case _:
             print('Invalid command')
