@@ -101,13 +101,16 @@ class Dangeon(cmd.Cmd):
         if len(arg) == 1 and arg[0] != monster.name:
             print(f'No {arg[0]} here')
             return
-        if len(arg) == 0:
-            damage = 10
-        elif len(arg) == 2:
-            if arg[0] != 'with':
+        damage = 10
+        if len(arg) > 1:
+            if arg[0] == 'with':
+                weapon = arg[1]
+            elif arg[1] == 'with':
+                weapon = arg[2]
+            else:
                 print('Invalid arguments')
                 return
-            match arg[1]:
+            match weapon:
                 case 'sword':
                     damage = 10
                 case 'spear':
@@ -129,7 +132,7 @@ class Dangeon(cmd.Cmd):
             
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
-        elif len(line) >= 2 and 'with'.startswith(prefix):
+        if len(line) >= 2 and 'with'.startswith(prefix):
             return ['with']
         elif len(line) >= 3 and line[-2] == 'with':
             return [weapon for weapon in ['sword', 'spear', 'axe']
