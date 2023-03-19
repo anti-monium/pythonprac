@@ -98,23 +98,39 @@ class Dangeon(cmd.Cmd):
             return
         arg = shlex.split(arg)
         if len(arg) == 0:
-            monster = field[g.y][g.x]
-            if monster.hp >= 10:
-                damage = 10
-            else:
-                damage = monster.hp
-            monster.hp -= damage
-            print(f'Attacked {monster.name}, damage {damage} hp')
-            if monster.hp == 0:
-                print(f'{monster.name} died')
-                field[g.y][g.x] = 0
-            else:
-                print(f'{monster.name} now has {monster.hp}')
+            damage = 10
         elif len(arg) == 2:
             if arg[0] != 'with':
                 print('Invalid arguments')
                 return
+            match arg[1]:
+                case 'sword':
+                    damage = 10
+                case 'spear':
+                    damage = 15
+                case 'axe':
+                    damage = 20
+                case _:
+                    print('Unknown weapon')
+                    return
+        monster = field[g.y][g.x]
+        if monster.hp < damage:
+            damage = monster.hp
+        monster.hp -= damage
+        print(f'Attacked {monster.name}, damage {damage} hp')
+        if monster.hp == 0:
+            print(f'{monster.name} died')
+            field[g.y][g.x] = 0
+        else:
+            print(f'{monster.name} now has {monster.hp}')
             
+    def complete_attack(self, prefix, line, start, end):
+        line = shlex.split(line)
+        if len(line) == 2 and 'with'.startswith(prefix):
+            return ['with']
+        elif len(line) == 3:
+            return [weapon for weapon in ['sword', 'spear', 'axe']
+                    if weapon.startswith(prefix)]
 
 
 Dangeon(completekey='tab').cmdloop()
