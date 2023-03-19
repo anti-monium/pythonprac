@@ -23,7 +23,9 @@ class Monster:
         self.hello = s
         
 
-def encounter(x, y):
+def encounter(x, y, name):
+    if name == 'jgsbat':
+        name = cowsay.read_dot_cow(open('jgsbat.cow', 'r'))
     print(cowsay.cowsay(field[y][x].hello))
 
 
