@@ -12,13 +12,13 @@ class Gamer:
     
     def move_to(self, s):
         if s == 'up':
-            self.x = (self.x - 1) % n
-        elif s == 'down':
-            self.x = (self.x + 1) % n
-        elif s == 'left':
             self.y = (self.y - 1) % n
-        elif s == 'right':
+        elif s == 'down':
             self.y = (self.y + 1) % n
+        elif s == 'left':
+            self.x = (self.x - 1) % n
+        elif s == 'right':
+            self.x = (self.x + 1) % n
         print(f'Moved to ({self.x}, {self.y})')
         if field[self.y][self.x]:
             encounter(self.x, self.y)
@@ -91,6 +91,18 @@ class Dangeon(cmd.Cmd):
         if field[y][x]:
             print('Replaced the old monster')
         field[y][x] = Monster(name, x, y, hello, hp)
+        
+    def do_attack(self, arg):
+        if not field[g.y][g.x]:
+            print('No monster here')
+            return
+        monster = field[g.y][g.x]
+        if monster.hp >= 10:
+            damage = 10
+        else:
+            damage = monster.hp
+        monster.hp -= damage
+        print(f'Attacked {monster.name}, damage {damage} hp')
 
 
 Dangeon(completekey='tab').cmdloop()
