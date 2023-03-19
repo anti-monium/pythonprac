@@ -34,8 +34,9 @@ class Monster:
         
 
 def encounter(x, y):
-    if field[y][x].name == 'jgsbat':
-        name = cowsay.read_dot_cow(open('jgsbat.cow', 'r'))
+    if field[y][x].name in custom_cows:
+        f = field[y][x].name + '.cow'
+        name = cowsay.read_dot_cow(open(f, 'r'))
         print(cowsay.cowsay(field[y][x].hello, cowfile=name))
     else:
 	    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
@@ -44,6 +45,7 @@ def encounter(x, y):
 class Dangeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>>\t'
+    
     def do_up(self, arg):
         g.move_to('up')
     
@@ -57,46 +59,38 @@ class Dangeon(cmd.Cmd):
         g.move_to('right')
     
     def do_addmon(self, arg):
-        pass
+        arg = shlex.split(arg)
+        if (len(arg) < 8 or 'hello' not in arg 
+            or 'hp' not in arg or 'coords' not in arg):
+            print('Invalid arguments')
+            return
+        try:
+            name = arg[0]
+            i = 1
+            while i < len(arg):
+                if arg[i] == 'hello':
+                    hello = arg[i + 1]
+                    i += 2
+                elif arg[i] == 'hp':
+                    hp = int(arg[i + 1])
+                    i += 2
+                elif arg[i] == 'coords':
+                    x = int(arg[i + 1])
+                    y = int(arg[i + 2])
+                    i += 3
+                else:
+                    raise
+            _ = field[y][x]
+        except:
+            print('Invalid arguments')
+            return
+        if name not in cowsay.list_cows() and name not in custom_cows:
+            print('Cannot add unknown monster')
+            return
+        print(f'Added monster {name} to ({x}, {y}) saying {hello}')
+        if field[y][x]:
+            print('Replaced the old monster')
+        field[y][x] = Monster(name, x, y, hello, hp)
 
 
 Dangeon(completekey='tab').cmdloop()
-
-
-while True:
-    s = shlex.split(input())
-    match s:
-        case ['addmon', *opt]:
-            if (len(opt) < 8 or 'hello' not in opt 
-                or 'hp' not in opt or 'coords' not in opt):
-                print('Invalid arguments')
-                continue
-            try:
-                name = opt[0]
-                i = 1
-                while i < len(opt):
-                    if opt[i] == 'hello':
-                        hello = opt[i + 1]
-                        i += 2
-                    elif opt[i] == 'hp':
-                        hp = int(opt[i + 1])
-                        i += 2
-                    elif opt[i] == 'coords':
-                        x = int(opt[i + 1])
-                        y = int(opt[i + 2])
-                        i += 3
-                    else:
-                        raise
-                _ = field[y][x]
-            except:
-                print('Invalid arguments')
-                continue
-            if name not in cowsay.list_cows() and name not in custom_cows:
-                print('Cannot add unknown monster')
-                continue
-            print(f'Added monster {name} to ({x}, {y}) saying {hello}')
-            if field[y][x]:
-                print('Replaced the old monster')
-            field[y][x] = Monster(name, x, y, hello, hp)
-        case _:
-            print('Invalid command')
