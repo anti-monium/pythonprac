@@ -1,4 +1,13 @@
-weapons = {'sword': 10, 'spear': 15, 'axe': 20}  
+weapons = {'sword': 10, 'spear': 15, 'axe': 20}
+
+
+def request(s):
+    global dangeon_socket
+    dangeon_socket.sendall(s.encode())
+    ans = ''
+    dangeon_socket.recv_into(ans)
+    ans = ans.decode()
+    print(ans)
 
 
 class CLi_Dangeon(cmd.Cmd):
