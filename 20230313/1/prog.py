@@ -22,20 +22,10 @@ class Monster:
         self.name = name
         self.hello = hello
         self.hp = hp
-        
-'''
-def encounter(x, y):
-    if field[y][x].name in custom_cows:
-        f = field[y][x].name + '.cow'
-        name = cowsay.read_dot_cow(open(f, 'r'))
-        print(cowsay.cowsay(field[y][x].hello, cowfile=name))
-    else:
-	    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
-'''	    
 
 
 def encounter(x, y):
-    return f'MONSTER {field[y][x].name} {field[y][x].hello}'
+    return f'MONSTER {field[y][x].name} \'{field[y][x].hello}\''
 
 
 def move(x, y):

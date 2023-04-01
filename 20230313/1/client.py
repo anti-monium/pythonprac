@@ -6,13 +6,28 @@ weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 custom_cows = ['jgsbat']
 n = 10
 
+
+def print_monster(name, hello):
+    if name in custom_cows:
+        f = name + '.cow'
+        name = cowsay.read_dot_cow(open(f, 'r'))
+        print(cowsay.cowsay(hello, cowfile=name))
+    else:
+	    print(cowsay.cowsay(hello, cow=name))
+
+
 def request(s):
     global dangeon_socket
     dangeon_socket.sendall(s.encode())
     ans = ''
     dangeon_socket.recv_into(ans)
-    ans = ans.decode()
-    print(ans)
+    ans = ans.decode().split('\n')
+    for line in ans:
+        if line.startswith('MONSTER'):
+            line = shlex.split(line)
+            print_monster(line[1], line[2])
+        else:
+            print(line)
 
 
 class CLi_Dangeon(cmd.Cmd):
