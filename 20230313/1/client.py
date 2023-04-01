@@ -1,5 +1,10 @@
-weapons = {'sword': 10, 'spear': 15, 'axe': 20}
+import cowsay
+import shlex
+import cmd
 
+weapons = {'sword': 10, 'spear': 15, 'axe': 20}
+custom_cows = ['jgsbat']
+n = 10
 
 def request(s):
     global dangeon_socket
@@ -12,19 +17,19 @@ def request(s):
 
 class CLi_Dangeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
-    prompt = '>>>>\t'
+    prompt = '>>>> '
     
     def do_up(self, arg):
-        request('up')
+        request('move 0 -1')
     
     def do_down(self, arg):
-        request('down')
+        request('move 0 1')
     
     def do_left(self, arg):
-        request('left')
+        request('move -1 0')
     
     def do_right(self, arg):
-        request('right')
+        request('move 1 0')
     
     def do_addmon(self, arg):
         arg = shlex.split(arg)
@@ -48,23 +53,24 @@ class CLi_Dangeon(cmd.Cmd):
                     i += 3
                 else:
                     raise
-            _ = field[y][x]
         except:
             print('Invalid arguments')
             return
         if name not in cowsay.list_cows() and name not in custom_cows:
             print('Cannot add unknown monster')
             return
-        request(f'addmon {name} {hello} {x} {y} {hp}')
+        if x < 0 or x > n - 1 or y < 0 or y > n - 1:
+            print('Invalid arguments. Field size is 10x10')
+        request(f'addmon {name} \'{hello}\' {x} {y} {hp}')
         
     def do_attack(self, arg):
-        if not field[g.y][g.x]:
-            print('No monster here')
-            return
         arg = shlex.split(arg)
-        monster = field[g.y][g.x]
-        if len(arg) == 1 and arg[0] != monster.name:
-            print(f'No {arg[0]} here')
+        if len(arg) < 1:
+            print('Invalid arguments')
+            return
+        name = arg[0]
+        if name not in cowsay.list_cows() and name not in custom_cows:
+            print('Unknown monster')
             return
         damage = 10
         if len(arg) > 1:
@@ -96,4 +102,4 @@ class CLi_Dangeon(cmd.Cmd):
                     
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dangeon_socket:
     dangeon_socket.connect(("localhost", 1337))
-    Cli_Dangeon().cmdloop()
+    Cli_Dangeon(completekey='tab').cmdloop()

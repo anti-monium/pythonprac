@@ -10,18 +10,9 @@ class Gamer:
     x = 0
     y = 0
     
-    def move_to(self, s):
-        if s == 'up':
-            self.y = (self.y - 1) % n
-        elif s == 'down':
-            self.y = (self.y + 1) % n
-        elif s == 'left':
-            self.x = (self.x - 1) % n
-        elif s == 'right':
-            self.x = (self.x + 1) % n
-        print(f'Moved to ({self.x}, {self.y})')
-        if field[self.y][self.x]:
-            encounter(self.x, self.y)
+    def move_to(self, dx, dy):
+        self.x = (self.x + dx) % n
+        self.y = (self.y + dy) % n
                   
 g = Gamer()
 
@@ -32,7 +23,7 @@ class Monster:
         self.hello = hello
         self.hp = hp
         
-
+'''
 def encounter(x, y):
     if field[y][x].name in custom_cows:
         f = field[y][x].name + '.cow'
@@ -40,106 +31,67 @@ def encounter(x, y):
         print(cowsay.cowsay(field[y][x].hello, cowfile=name))
     else:
 	    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
-	    
-	    
-class Dangeon(cmd.Cmd):
-    intro = '<<< Welcome to Python-MUD 0.1 >>>'
-    prompt = '>>>>\t'
-    
-    def do_up(self, arg):
-        g.move_to('up')
-    
-    def do_down(self, arg):
-        g.move_to('down')
-    
-    def do_left(self, arg):
-        g.move_to('left')
-    
-    def do_right(self, arg):
-        g.move_to('right')
-    
-    def do_addmon(self, arg):
-        arg = shlex.split(arg)
-        if (len(arg) < 8 or 'hello' not in arg 
-            or 'hp' not in arg or 'coords' not in arg):
-            print('Invalid arguments')
-            return
-        try:
-            name = arg[0]
-            i = 1
-            while i < len(arg):
-                if arg[i] == 'hello':
-                    hello = arg[i + 1]
-                    i += 2
-                elif arg[i] == 'hp':
-                    hp = int(arg[i + 1])
-                    i += 2
-                elif arg[i] == 'coords':
-                    x = int(arg[i + 1])
-                    y = int(arg[i + 2])
-                    i += 3
-                else:
-                    raise
-            _ = field[y][x]
-        except:
-            print('Invalid arguments')
-            return
-        if name not in cowsay.list_cows() and name not in custom_cows:
-            print('Cannot add unknown monster')
-            return
-        print(f'Added monster {name} to ({x}, {y}) saying {hello}')
-        if field[y][x]:
-            print('Replaced the old monster')
-        field[y][x] = Monster(name, x, y, hello, hp)
-        
-    def do_attack(self, arg):
-        if not field[g.y][g.x]:
-            print('No monster here')
-            return
-        arg = shlex.split(arg)
-        monster = field[g.y][g.x]
-        if len(arg) == 1 and arg[0] != monster.name:
-            print(f'No {arg[0]} here')
-            return
-        damage = 10
-        if len(arg) > 1:
-            if arg[0] == 'with':
-                weapon = arg[1]
-            elif arg[1] == 'with':
-                weapon = arg[2]
-            else:
-                print('Invalid arguments')
-                return
-            match weapon:
-                case 'sword':
-                    damage = 10
-                case 'spear':
-                    damage = 15
-                case 'axe':
-                    damage = 20
-                case _:
-                    print('Unknown weapon')
-                    return
-        if monster.hp < damage:
-            damage = monster.hp
-        monster.hp -= damage
-        print(f'Attacked {monster.name}, damage {damage} hp')
-        if monster.hp == 0:
-            print(f'{monster.name} died')
-            field[g.y][g.x] = 0
-        else:
-            print(f'{monster.name} now has {monster.hp}')
-            
-    def complete_attack(self, prefix, line, start, end):
-        line = shlex.split(line)
-        if len(line) >= 2 and 'with'.startswith(prefix):
-            return ['with']
-        elif len(line) >= 3 and line[-2] == 'with':
-            return [weapon for weapon in ['sword', 'spear', 'axe']
-                    if weapon.startswith(prefix)]
-        else:
-            return [name for name in cowsay.list_cows() + custom_cows
-                    if name.startswith(prefix)]
-                    
+'''	    
 
-Dangeon(completekey='tab').cmdloop()
+
+def encounter(x, y):
+    return f'MONSTER {field[y][x].name} {field[y][x].hello}'
+
+
+def move(x, y):
+    g.move_to(x, y)
+    ans = f'Moved to ({g.x}, {g.y})'
+    if field[g.y][g.x]:
+        ans = ans + '\n' + encounter(g.x, g.y)
+    return ans
+    
+    
+def addmon(name, hello, x, y, hp):
+    ans = f'Added monster {name} to ({x}, {y}) saying {hello}'
+    if field[y][x]:
+        ans = ans + '\n' + 'Replaced the old monster'
+    field[y][x] = Monster(name, x, y, hello, hp)
+    
+    
+def attack(name, damage):
+    if not field[g.y][g.x]:
+        return 'No monster here'
+    monster = field[g.y][g.x]
+    if name != monster.name
+        return f'No {name} here'
+    if monster.hp < damage:
+        damage = monster.hp
+    monster.hp -= damage
+    ans = f'Attacked {monster.name}, damage {damage} hp'
+    if monster.hp == 0:
+        ans = '\n' + f'{monster.name} died'
+        field[g.y][g.x] = 0
+    else:
+        ans = '\n' + f'{monster.name} now has {monster.hp}'
+    return ans
+    
+
+async def Dangeon(reader, writer):
+    host, port = writer.get_extra_info('peername')
+    while not reader.at_eof():
+        request = await reader.readline()
+        request = request.decode()
+        match shlex.split(request):
+            case ["move", x, y]:
+                ans = move(int(x), int(y))
+            case ["addmon", name, hello, x, y, hp]:
+                ans = addmon(name, hello, int(x), int(y), int(hp))
+            case ["attack", name, damage]:
+                ans = attack(name, int(damage))
+        writer.write(ans.encode())
+    writer.close()
+    await writer.wait_closed()
+
+
+async def main():
+    server = await asyncio.start_server(Dangeon, '0.0.0.0', 1337)
+    async with server:
+        await server.serve_forever()
+
+
+asyncio.run(main())
