@@ -18,10 +18,10 @@ def print_monster(name, hello):
 
 
 def request(s):
-    global dangeon_socket
-    dangeon_socket.send((s + '\n').encode())
+    global dungeon_socket
+    dungeon_socket.send((s + '\n').encode())
     ans = bytearray()
-    ans = dangeon_socket.recv(4096)
+    ans = dungeon_socket.recv(4096)
     ans = ans.decode().rstrip().split('\n')
     for line in ans:
         if line.startswith('MONSTER'):
@@ -31,7 +31,7 @@ def request(s):
             print(line)
 
 
-class Cli_Dangeon(cmd.Cmd):
+class Cli_Dungeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>> '
     
@@ -119,11 +119,11 @@ class Cli_Dangeon(cmd.Cmd):
                     
                     
     def do_exit(self, arg):
-        global dangeon_socket
-        dangeon_socket.close()
+        global dungeon_socket
+        dungeon_socket.close()
         return True
                     
                     
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dangeon_socket:
-    dangeon_socket.connect(("localhost", 1337))
-    Cli_Dangeon(completekey='tab').cmdloop()
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
+    dungeon_socket.connect(("localhost", 1337))
+    Cli_Dungeon(completekey='tab').cmdloop()
