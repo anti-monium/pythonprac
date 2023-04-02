@@ -1,0 +1,74 @@
+From 5e77aecbb82a4f8f6b372b0463844455facc9a76 Mon Sep 17 00:00:00 2001
+From: Maria <mrzzz13169@gmail.com>
+Date: Sat, 1 Apr 2023 20:10:59 +0300
+Subject: [PATCH 3/4] added cow output
+
+---
+ 20230313/1/client.py | 19 +++++++++++++++++--
+ 20230313/1/prog.py   | 12 +-----------
+ 2 files changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/20230313/1/client.py b/20230313/1/client.py
+index ba36fa3..8db6c8f 100644
+--- a/20230313/1/client.py
++++ b/20230313/1/client.py
+@@ -6,13 +6,28 @@ weapons = {'sword': 10, 'spear': 15, 'axe': 20}
+ custom_cows = ['jgsbat']
+ n = 10
+ 
++
++def print_monster(name, hello):
++    if name in custom_cows:
++        f = name + '.cow'
++        name = cowsay.read_dot_cow(open(f, 'r'))
++        print(cowsay.cowsay(hello, cowfile=name))
++    else:
++	    print(cowsay.cowsay(hello, cow=name))
++
++
+ def request(s):
+     global dangeon_socket
+     dangeon_socket.sendall(s.encode())
+     ans = ''
+     dangeon_socket.recv_into(ans)
+-    ans = ans.decode()
+-    print(ans)
++    ans = ans.decode().split('\n')
++    for line in ans:
++        if line.startswith('MONSTER'):
++            line = shlex.split(line)
++            print_monster(line[1], line[2])
++        else:
++            print(line)
+ 
+ 
+ class CLi_Dangeon(cmd.Cmd):
+diff --git a/20230313/1/prog.py b/20230313/1/prog.py
+index 998c104..dff7c87 100644
+--- a/20230313/1/prog.py
++++ b/20230313/1/prog.py
+@@ -22,20 +22,10 @@ class Monster:
+         self.name = name
+         self.hello = hello
+         self.hp = hp
+-        
+-'''
+-def encounter(x, y):
+-    if field[y][x].name in custom_cows:
+-        f = field[y][x].name + '.cow'
+-        name = cowsay.read_dot_cow(open(f, 'r'))
+-        print(cowsay.cowsay(field[y][x].hello, cowfile=name))
+-    else:
+-	    print(cowsay.cowsay(field[y][x].hello, cow=field[y][x].name))
+-'''	    
+ 
+ 
+ def encounter(x, y):
+-    return f'MONSTER {field[y][x].name} {field[y][x].hello}'
++    return f'MONSTER {field[y][x].name} \'{field[y][x].hello}\''
+ 
+ 
+ def move(x, y):
+-- 
+2.34.1
+

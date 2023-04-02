@@ -1,0 +1,31 @@
+From bd49caac75ff95960d8e55f520654072cb9bafc5 Mon Sep 17 00:00:00 2001
+From: Maria <mrzzz13169@gmail.com>
+Date: Sat, 1 Apr 2023 17:38:58 +0300
+Subject: [PATCH 1/4] client done
+
+---
+ 20230313/1/client.py | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/20230313/1/client.py b/20230313/1/client.py
+index 6e0750c..4012de2 100644
+--- a/20230313/1/client.py
++++ b/20230313/1/client.py
+@@ -1,4 +1,13 @@
+-weapons = {'sword': 10, 'spear': 15, 'axe': 20}  
++weapons = {'sword': 10, 'spear': 15, 'axe': 20}
++
++
++def request(s):
++    global dangeon_socket
++    dangeon_socket.sendall(s.encode())
++    ans = ''
++    dangeon_socket.recv_into(ans)
++    ans = ans.decode()
++    print(ans)
+ 
+ 
+ class CLi_Dangeon(cmd.Cmd):
+-- 
+2.34.1
+
