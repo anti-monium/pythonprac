@@ -1,6 +1,7 @@
 import cowsay
 import shlex
 import cmd
+import asyncio
 
 n = 10
 field = [[0 for i in range(n)] for j in range(n)]
@@ -41,23 +42,24 @@ def addmon(name, hello, x, y, hp):
     if field[y][x]:
         ans = ans + '\n' + 'Replaced the old monster'
     field[y][x] = Monster(name, x, y, hello, hp)
+    return ans
     
     
 def attack(name, damage):
     if not field[g.y][g.x]:
         return 'No monster here'
     monster = field[g.y][g.x]
-    if name != monster.name
+    if name != monster.name:
         return f'No {name} here'
     if monster.hp < damage:
         damage = monster.hp
     monster.hp -= damage
     ans = f'Attacked {monster.name}, damage {damage} hp'
     if monster.hp == 0:
-        ans = '\n' + f'{monster.name} died'
+        ans = ans + '\n' + f'{monster.name} died'
         field[g.y][g.x] = 0
     else:
-        ans = '\n' + f'{monster.name} now has {monster.hp}'
+        ans = ans + '\n' + f'{monster.name} now has {monster.hp}'
     return ans
     
 
@@ -65,7 +67,8 @@ async def Dangeon(reader, writer):
     host, port = writer.get_extra_info('peername')
     while not reader.at_eof():
         request = await reader.readline()
-        request = request.decode()
+        request = request.decode().rstrip()
+        ans = ''
         match shlex.split(request):
             case ["move", x, y]:
                 ans = move(int(x), int(y))
@@ -73,7 +76,7 @@ async def Dangeon(reader, writer):
                 ans = addmon(name, hello, int(x), int(y), int(hp))
             case ["attack", name, damage]:
                 ans = attack(name, int(damage))
-        writer.write(ans.encode())
+        writer.write((ans + '\n').encode())
     writer.close()
     await writer.wait_closed()
 

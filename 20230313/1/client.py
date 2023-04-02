@@ -1,6 +1,7 @@
 import cowsay
 import shlex
 import cmd
+import socket
 
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 custom_cows = ['jgsbat']
@@ -18,10 +19,10 @@ def print_monster(name, hello):
 
 def request(s):
     global dangeon_socket
-    dangeon_socket.sendall(s.encode())
-    ans = ''
-    dangeon_socket.recv_into(ans)
-    ans = ans.decode().split('\n')
+    dangeon_socket.send((s + '\n').encode())
+    ans = bytearray()
+    ans = dangeon_socket.recv(4096)
+    ans = ans.decode().rstrip().split('\n')
     for line in ans:
         if line.startswith('MONSTER'):
             line = shlex.split(line)
@@ -30,7 +31,7 @@ def request(s):
             print(line)
 
 
-class CLi_Dangeon(cmd.Cmd):
+class Cli_Dangeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>> '
     
@@ -105,7 +106,9 @@ class CLi_Dangeon(cmd.Cmd):
             
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
-        if len(line) >= 2 and 'with'.startswith(prefix):
+        if line[-1] == 'with':
+            return ['sword', 'spear', 'axe']
+        elif len(line) >= 2 and 'with'.startswith(prefix):
             return ['with']
         elif len(line) >= 3 and line[-2] == 'with':
             return [weapon for weapon in ['sword', 'spear', 'axe']
@@ -113,6 +116,12 @@ class CLi_Dangeon(cmd.Cmd):
         else:
             return [name for name in cowsay.list_cows() + custom_cows
                     if name.startswith(prefix)]
+                    
+                    
+    def do_exit(self, arg):
+        global dangeon_socket
+        dangeon_socket.close()
+        return True
                     
                     
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dangeon_socket:
