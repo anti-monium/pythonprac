@@ -63,7 +63,7 @@ def attack(name, damage):
     return ans
     
 
-async def Dangeon(reader, writer):
+async def Dungeon(reader, writer):
     host, port = writer.get_extra_info('peername')
     while not reader.at_eof():
         request = await reader.readline()
@@ -82,7 +82,7 @@ async def Dangeon(reader, writer):
 
 
 async def main():
-    server = await asyncio.start_server(Dangeon, '0.0.0.0', 1337)
+    server = await asyncio.start_server(Dungeon, '0.0.0.0', 1337)
     async with server:
         await server.serve_forever()
 

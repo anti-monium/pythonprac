@@ -2,36 +2,30 @@ import cowsay
 import shlex
 import cmd
 import socket
+import sys
+import threading
+import readline
 
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 custom_cows = ['jgsbat']
 n = 10
 
 
-def print_monster(name, hello):
-    if name in custom_cows:
-        f = name + '.cow'
-        name = cowsay.read_dot_cow(open(f, 'r'))
-        print(cowsay.cowsay(hello, cowfile=name))
-    else:
-	    print(cowsay.cowsay(hello, cow=name))
-
-
 def request(s):
-    global dangeon_socket
-    dangeon_socket.send((s + '\n').encode())
-    ans = bytearray()
-    ans = dangeon_socket.recv(4096)
-    ans = ans.decode().rstrip().split('\n')
-    for line in ans:
-        if line.startswith('MONSTER'):
-            line = shlex.split(line)
-            print_monster(line[1], line[2])
-        else:
-            print(line)
+    global dungeon_socket
+    dungeon_socket.send((s + '\n').encode())
+            
+            
+def recieve():
+    global dungeon_socket
+    while thread_alive:
+        ans = bytearray()
+        ans = dungeon_socket.recv(4096)
+        ans = ans.decode().rstrip()
+        print(f"\n{ans}\n{Cli_Dungeon().prompt}{readline.get_line_buffer()}", end="", flush=True)
 
 
-class Cli_Dangeon(cmd.Cmd):
+class Cli_Dungeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>> '
     
@@ -119,11 +113,24 @@ class Cli_Dangeon(cmd.Cmd):
                     
                     
     def do_exit(self, arg):
-        global dangeon_socket
-        dangeon_socket.close()
+        global dungeon_socket
+        request('exit') #TODO
+        dungeon_socket.close()
+        thread_alive = False
         return True
                     
-                    
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dangeon_socket:
-    dangeon_socket.connect(("localhost", 1337))
-    Cli_Dangeon(completekey='tab').cmdloop()
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
+    if len(sys.argv) < 2:
+        print('You must enter your nickname before starting the game')
+        exit()
+    nickname = sys.argv[1]
+    dungeon_socket.connect(("localhost", 1337))
+    dungeon_socket.send((f'login {nickname}' + '\n').encode()) #TODO
+    ans = dungeon_socket.recv(4096).decode().rstrip()
+    print(ans)
+    if ans != 'This nickname is already taken':
+        reciever = threading.Thread(target=recieve)
+        thread_alive = True
+        reciever.start()
+        Cli_Dungeon(completekey='tab').cmdloop()
