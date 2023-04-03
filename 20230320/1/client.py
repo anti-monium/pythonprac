@@ -17,12 +17,14 @@ def request(s):
             
             
 def recieve():
-    global dungeon_socket
+    global dungeon_socket, cmdline
     while thread_alive:
         ans = bytearray()
         ans = dungeon_socket.recv(4096)
         ans = ans.decode().rstrip()
-        print(f"\n{ans}\n{Cli_Dungeon().prompt}{readline.get_line_buffer()}", end="", flush=True)
+        if ans == "exit":
+            break
+        print(f"\n{ans}\n{cmdline.prompt}{readline.get_line_buffer()}", end="", flush=True)
 
 
 class Cli_Dungeon(cmd.Cmd):
@@ -82,7 +84,7 @@ class Cli_Dungeon(cmd.Cmd):
         if name not in cowsay.list_cows() and name not in custom_cows:
             print('Unknown monster')
             return
-        damage = 10
+        weapon = 'sword'
         if len(arg) > 1:
             if arg[0] == 'with':
                 weapon = arg[1]
@@ -91,12 +93,10 @@ class Cli_Dungeon(cmd.Cmd):
             else:
                 print('Invalid arguments')
                 return
-            if weapon in weapons.keys():
-                damage = weapons[weapon]
-            else:
+            if weapon not in weapons.keys():
                 print('Unknown weapon')
                 return
-        request(f'attack {name} {damage}')
+        request(f'attack {name} {weapon}')
             
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
@@ -110,12 +110,10 @@ class Cli_Dungeon(cmd.Cmd):
         else:
             return [name for name in cowsay.list_cows() + custom_cows
                     if name.startswith(prefix)]
-                    
-                    
+                     
     def do_exit(self, arg):
         global dungeon_socket
-        request('exit') #TODO
-        dungeon_socket.close()
+        request('exit')
         thread_alive = False
         return True
                     
@@ -126,11 +124,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
         exit()
     nickname = sys.argv[1]
     dungeon_socket.connect(("localhost", 1337))
-    dungeon_socket.send((f'login {nickname}' + '\n').encode()) #TODO
+    dungeon_socket.send((f'login {nickname}' + '\n').encode())
     ans = dungeon_socket.recv(4096).decode().rstrip()
     print(ans)
-    if ans != 'This nickname is already taken':
+    if ans != 'Nickname already in use':
+        cmdline = Cli_Dungeon(completekey='tab')
         reciever = threading.Thread(target=recieve)
         thread_alive = True
         reciever.start()
-        Cli_Dungeon(completekey='tab').cmdloop()
+        cmdline.cmdloop()
+    dungeon_socket.close()
