@@ -147,4 +147,5 @@ async def main():
         await server.serve_forever()
 
 
-asyncio.run(main())
+def start():
+    asyncio.run(main())

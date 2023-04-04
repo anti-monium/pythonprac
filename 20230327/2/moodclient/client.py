@@ -121,19 +121,16 @@ class Cli_Dungeon(cmd.Cmd):
         return True
                     
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
-    if len(sys.argv) < 2:
-        print('You must enter your nickname before starting the game')
-        exit()
-    nickname = sys.argv[1]
-    dungeon_socket.connect(("localhost", 1337))
-    dungeon_socket.send((f'login {nickname}' + '\n').encode())
-    ans = dungeon_socket.recv(4096).decode().rstrip()
-    print(ans)
-    if ans != 'Nickname already in use':
-        cmdline = Cli_Dungeon(completekey='tab')
-        reciever = threading.Thread(target=recieve)
-        thread_alive = True
-        reciever.start()
-        cmdline.cmdloop()
-    dungeon_socket.close()
+def start(nickname):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
+        dungeon_socket.connect(("localhost", 1337))
+        dungeon_socket.send((f'login {nickname}' + '\n').encode())
+        ans = dungeon_socket.recv(4096).decode().rstrip()
+        print(ans)
+        if ans != 'Nickname already in use':
+            cmdline = Cli_Dungeon(completekey='tab')
+            reciever = threading.Thread(target=recieve)
+            thread_alive = True
+            reciever.start()
+            cmdline.cmdloop()
+        dungeon_socket.close()
