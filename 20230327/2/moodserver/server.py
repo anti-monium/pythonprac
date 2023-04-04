@@ -1,6 +1,5 @@
 import cowsay
 import shlex
-import cmd
 import asyncio
 
 n = 10
@@ -10,18 +9,19 @@ players = {}
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 used_nicks = set()
 
+
 class Gamer:
     x = 0
     y = 0
-    
+
     def __init__(self, nick):
         self.nick = nick
-    
+
     def move_to(self, dx, dy):
         self.x = (self.x + dx) % n
         self.y = (self.y + dy) % n
 
-  
+
 class Monster:
     def __init__(self, name, x, y, hello, hp):
         self.name = name
@@ -33,9 +33,9 @@ def encounter(x, y):
     if field[y][x].name in custom_cows:
         f = field[y][x].name + '.cow'
         name = cowsay.read_dot_cow(open(f, 'r'))
-        return cowsay.cowsay(field[y][x].hello, cowfile=name) 
+        return cowsay.cowsay(field[y][x].hello, cowfile=name)
     else:
-	    return cowsay.cowsay(field[y][x].hello, cow=field[y][x].name)
+        return cowsay.cowsay(field[y][x].hello, cow=field[y][x].name)
 
 
 def move(g, x, y):
@@ -44,8 +44,8 @@ def move(g, x, y):
     if field[g.y][g.x]:
         ans = ans + '\n' + encounter(g.x, g.y)
     return ans
-    
-    
+
+
 def addmon(g, name, hello, x, y, hp):
     ans1 = f'Added monster {name} to ({x}, {y}) saying {hello}'
     if field[y][x]:
@@ -53,8 +53,8 @@ def addmon(g, name, hello, x, y, hp):
     field[y][x] = Monster(name, x, y, hello, hp)
     ans2 = f'{g.nick} added {name} with {hp} hp'
     return (ans1, ans2)
-    
-    
+
+
 def attack(g, name, weapon):
     damage = weapons[weapon]
     if not field[g.y][g.x]:
@@ -75,7 +75,7 @@ def attack(g, name, weapon):
         ans1 = ans1 + '\n' + f'{monster.name} now has {monster.hp}'
         ans2 = ans2 + '\n' + f'{monster.name} now has {monster.hp}'
     return (ans1, ans2)
-    
+
 
 async def Dungeon(reader, writer):
     player = "{}:{}".format(*writer.get_extra_info('peername'))

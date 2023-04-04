@@ -2,7 +2,6 @@ import cowsay
 import shlex
 import cmd
 import socket
-import sys
 import threading
 import readline
 
@@ -14,10 +13,10 @@ n = 10
 def request(s):
     global dungeon_socket
     dungeon_socket.send((s + '\n').encode())
-            
-            
+
+
 def recieve():
-    global dungeon_socket, cmdline
+    global dungeon_socket, cmdline, thread_alive
     while thread_alive:
         ans = bytearray()
         ans = dungeon_socket.recv(4096)
@@ -30,23 +29,22 @@ def recieve():
 class Cli_Dungeon(cmd.Cmd):
     intro = '<<< Welcome to Python-MUD 0.1 >>>'
     prompt = '>>>> '
-    
+
     def do_up(self, arg):
         request('move 0 -1')
-    
+
     def do_down(self, arg):
         request('move 0 1')
-    
+
     def do_left(self, arg):
         request('move -1 0')
-    
+
     def do_right(self, arg):
         request('move 1 0')
-    
+
     def do_addmon(self, arg):
         arg = shlex.split(arg)
-        if (len(arg) < 8 or 'hello' not in arg 
-            or 'hp' not in arg or 'coords' not in arg):
+        if (len(arg) < 8 or 'hello' not in arg or 'hp' not in arg or 'coords' not in arg):
             print('Invalid arguments')
             return
         try:
@@ -65,7 +63,7 @@ class Cli_Dungeon(cmd.Cmd):
                     i += 3
                 else:
                     raise
-        except:
+        except Exception:
             print('Invalid arguments')
             return
         if name not in cowsay.list_cows() and name not in custom_cows:
@@ -74,7 +72,7 @@ class Cli_Dungeon(cmd.Cmd):
         if x < 0 or x > n - 1 or y < 0 or y > n - 1:
             print('Invalid arguments. Field size is 10x10')
         request(f'addmon {name} \'{hello}\' {x} {y} {hp}')
-        
+
     def do_attack(self, arg):
         arg = shlex.split(arg)
         if len(arg) < 1:
@@ -97,7 +95,7 @@ class Cli_Dungeon(cmd.Cmd):
                 print('Unknown weapon')
                 return
         request(f'attack {name} {weapon}')
-            
+
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
         if line[-1] == 'with':
@@ -110,16 +108,16 @@ class Cli_Dungeon(cmd.Cmd):
         else:
             return [name for name in cowsay.list_cows() + custom_cows
                     if name.startswith(prefix)]
-                    
+
     def do_sayall(self, arg):
         request('sayall ' + arg)
-                     
+
     def do_exit(self, arg):
-        global dungeon_socket
+        global dungeon_socket, thread_alive
         request('exit')
         thread_alive = False
         return True
-                    
+
 
 def start(nickname):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
