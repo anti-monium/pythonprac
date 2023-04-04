@@ -112,6 +112,9 @@ class Cli_Dungeon(cmd.Cmd):
                     if name.startswith(prefix)]
                     
     def do_sayall(self, arg):
+        if not arg:
+            print('Invalid arguments')
+            return
         request('sayall ' + arg)
                      
     def do_exit(self, arg):
