@@ -132,8 +132,6 @@ async def Dungeon(reader, writer):
                     case ['login', nick]:
                         if nick in used_nicks:
                             await players[player].put('Nickname already in use')
-                            if player in players.keys():
-                                del players[player]
                         else:
                             used_nicks.add(nick)
                             me = Gamer(nick)
