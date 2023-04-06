@@ -8,6 +8,9 @@ import readline
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 custom_cows = ['jgsbat']
 n = 10
+thread_alive = True
+dungeon_socket = None
+cmdline = None
 
 
 def request(s):
@@ -71,6 +74,7 @@ class Cli_Dungeon(cmd.Cmd):
             return
         if x < 0 or x > n - 1 or y < 0 or y > n - 1:
             print('Invalid arguments. Field size is 10x10')
+            return
         request(f'addmon {name} \'{hello}\' {x} {y} {hp}')
 
     def do_attack(self, arg):
@@ -120,6 +124,7 @@ class Cli_Dungeon(cmd.Cmd):
 
 
 def start(nickname):
+    global dungeon_socket, cmdline, thread_alive
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as dungeon_socket:
         dungeon_socket.connect(("localhost", 1337))
         dungeon_socket.send((f'login {nickname}' + '\n').encode())
@@ -128,7 +133,6 @@ def start(nickname):
         if ans != 'Nickname already in use':
             cmdline = Cli_Dungeon(completekey='tab')
             reciever = threading.Thread(target=recieve)
-            thread_alive = True
             reciever.start()
             cmdline.cmdloop()
         dungeon_socket.close()

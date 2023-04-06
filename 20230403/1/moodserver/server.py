@@ -1,6 +1,7 @@
 import cowsay
 import shlex
 import asyncio
+import random
 
 n = 10
 field = [[0 for i in range(n)] for j in range(n)]
@@ -8,6 +9,7 @@ custom_cows = ['jgsbat']
 players = {}
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 used_nicks = set()
+monster_cells = set()
 
 
 class Gamer:
@@ -77,6 +79,43 @@ def attack(g, name, weapon):
     return (ans1, ans2)
 
 
+async def monster_wandering():
+    while True:
+        await asyncio.sleep(30)
+        if not monster_cells:
+            continue
+        monsters = list(monster_cells)
+        old_x, old_y = monsters[random.randint(0, len(monster_cells) - 1)]
+        monster = field[old_y][old_x]
+        movements = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        dx, dy = movements[random.randint(0,3)]
+        movement = ''
+        match [dx, dy]:
+            case [0, 1]:
+                movement = 'down'
+            case [0, -1]:
+                movement = 'up'
+            case [1, 0]:
+                movement = 'right'
+            case [-1, 0]:
+                movement = 'left'
+        while field[(old_y + dy) % n][(old_x + dx) % n]:
+            old_x, old_y = monsters[random.randint(0, len(monster_cells) - 1)]
+            monster = field[old_y][old_x]
+            movements = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+            dx, dy = movements[random.randint(0,3)]
+        new_x, new_y = (old_x + dx) % n, (old_y + dy) % n
+        field[new_y][new_x] = monster
+        field[old_y][old_x] = 0
+        monster_cells.remove((old_x, old_y))
+        monster_cells.add((new_x, new_y))
+        for p in players.keys():
+            ans = f'{monster.name} moved one cell {movement}'
+            if p.x == new_x and p.y == new_y:
+                ans = ans + '\n' + encounter(p.x, p.y)
+            await players[p].put(ans)
+
+
 async def Dungeon(reader, writer):
     player = "{}:{}".format(*writer.get_extra_info('peername'))
     print(player)
@@ -108,6 +147,7 @@ async def Dungeon(reader, writer):
                         await players[p].put(move(player, int(x), int(y)))
                     case ['addmon', name, hello, x, y, hp]:
                         for_me, for_others = addmon(player, name, hello, int(x), int(y), int(hp))
+                        monster_cells.add((int(x), int(y)))
                         await players[player].put(for_me)
                         for p in players.keys():
                             if p != player:
@@ -142,9 +182,9 @@ async def Dungeon(reader, writer):
 
 
 async def main():
-    server = await asyncio.start_server(Dungeon, '0.0.0.0', 1337)
-    async with server:
-        await server.serve_forever()
+    srv = await asyncio.gather(asyncio.start_server(Dungeon, '0.0.0.0', 1337), monster_wandering())
+    async with srv:
+        await srv.serve_forever()
 
 
 def start():
