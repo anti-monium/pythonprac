@@ -1,3 +1,5 @@
+"""Server module. Used to run the server in the MOOD game."""
+
 import cowsay
 import shlex
 import asyncio
@@ -13,25 +15,68 @@ monster_cells = set()
 
 
 class Gamer:
+    """
+    class of players.
+
+    param x: type int - x coordinate of the player's position
+    param y: type int - y coordinate of the player's position
+    param nick: type str - unique player name
+    """
+
     x = 0
     y = 0
+    nick = ''
 
     def __init__(self, nick):
+        """
+        Player initialization.
+
+        param nick: type str - unique nickname entered by the player
+        """
         self.nick = nick
 
     def move_to(self, dx, dy):
+        """
+        Player movement.
+
+        Player movement by dx dy along the coordinate axes and
+        initialization of fields x and y.
+        """
         self.x = (self.x + dx) % n
         self.y = (self.y + dy) % n
 
 
 class Monster:
+    """
+    class of monsters.
+
+    param name: type str - monsters name from list_cows (or custom)
+    param hello: type str - welcome phrase
+    param hp: type int - health point
+    """
+
     def __init__(self, name, x, y, hello, hp):
+        """
+        Monster initialization.
+
+        param name: type str - monsters name from list_cows (or custom)
+        param x: type int - x coordinate of the monsters's position
+        param y: type int - y coordinate of the monsters's position
+        param hello: type str - welcome phrase
+        param hp: type int - health point
+        """
         self.name = name
         self.hello = hello
         self.hp = hp
 
 
 def encounter(x, y):
+    """
+    Function for meeting with monster. Returns painted monster with welcome phrase.
+
+    param x: type int - x coordinate of the monsters's position
+    param y: type int - y coordinate of the monsters's position
+    """
     if field[y][x].name in custom_cows:
         f = field[y][x].name + '.cow'
         name = cowsay.read_dot_cow(open(f, 'r'))
@@ -40,8 +85,14 @@ def encounter(x, y):
         return cowsay.cowsay(field[y][x].hello, cow=field[y][x].name)
 
 
-def move(g, x, y):
-    g.move_to(x, y)
+def move(g, dx, dy):
+    """
+    Players movement on the game field and meeting (may be) with monster on current cell.
+
+    param dx: type int - changes of along x coordinate
+    param dy: type int - changes of along y coordinate
+    """
+    g.move_to(dx, dy)
     ans = f'Moved to ({g.x}, {g.y})'
     if field[g.y][g.x]:
         ans = ans + '\n' + encounter(g.x, g.y)
@@ -49,6 +100,16 @@ def move(g, x, y):
 
 
 def addmon(g, name, hello, x, y, hp):
+    """
+    Adding new monster on field.
+
+    param g: type Gamer - the player who added the monster
+    param name: type str - monster's name
+    param hello: type str - welcome phrase
+    param x: type int - x coordinate of the monsters's position
+    param y: type int - y coordinate of the monsters's position
+    param hp: type int - health point
+    """
     ans1 = f'Added monster {name} to ({x}, {y}) saying {hello}'
     if field[y][x]:
         ans1 = ans1 + '\n' + 'Replaced the old monster'
@@ -58,6 +119,13 @@ def addmon(g, name, hello, x, y, hp):
 
 
 def attack(g, name, weapon):
+    """
+    The monster is attacked. He has health points deducted according to weapon damage.
+
+    param g: type Gamer - the player who attacked the monster
+    param name: type str - monster's name
+    weapon: type str - weapon for attack
+    """
     damage = weapons[weapon]
     if not field[g.y][g.x]:
         return 'No monster here'
@@ -80,6 +148,7 @@ def attack(g, name, weapon):
 
 
 async def monster_wandering():
+    """The asynchronous function moves a random monster one cell in a random direction every 30 seconds."""
     while True:
         await asyncio.sleep(30)
         if not monster_cells:
@@ -88,7 +157,7 @@ async def monster_wandering():
         old_x, old_y = monsters[random.randint(0, len(monster_cells) - 1)]
         monster = field[old_y][old_x]
         movements = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-        dx, dy = movements[random.randint(0,3)]
+        dx, dy = movements[random.randint(0, 3)]
         movement = ''
         match [dx, dy]:
             case [0, 1]:
@@ -103,7 +172,7 @@ async def monster_wandering():
             old_x, old_y = monsters[random.randint(0, len(monster_cells) - 1)]
             monster = field[old_y][old_x]
             movements = [(0, 1), (0, -1), (1, 0), (-1, 0)]
-            dx, dy = movements[random.randint(0,3)]
+            dx, dy = movements[random.randint(0, 3)]
         new_x, new_y = (old_x + dx) % n, (old_y + dy) % n
         field[new_y][new_x] = monster
         field[old_y][old_x] = 0
@@ -117,6 +186,7 @@ async def monster_wandering():
 
 
 async def Dungeon(reader, writer):
+    """Asynchronous function accepts commands from all players and sends responses to them."""
     player = "{}:{}".format(*writer.get_extra_info('peername'))
     print(player)
     players[player] = asyncio.Queue()
@@ -180,10 +250,17 @@ async def Dungeon(reader, writer):
 
 
 async def main():
+    """
+    Start server.
+
+    The function starts an asynchronous server that implements
+    the game logic in accordance with the commands received from the players.
+    """
     srv = await asyncio.gather(asyncio.start_server(Dungeon, '0.0.0.0', 1337), monster_wandering())
     async with srv:
         await srv.serve_forever()
 
 
 def start():
+    """Function to start the module."""
     asyncio.run(main())
