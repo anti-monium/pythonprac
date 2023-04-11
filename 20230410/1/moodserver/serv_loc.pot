@@ -1,0 +1,91 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-04-11 11:30+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: server.py:103
+msgid "Moved to ({}, {})"
+msgstr ""
+
+#: server.py:120
+msgid "Added monster {} to ({}, {}) saying {}"
+msgstr ""
+
+#: server.py:124
+msgid "{} added {} with {} hp"
+msgstr ""
+
+#: server.py:138
+msgid "No monster here"
+msgstr ""
+
+#: server.py:141
+msgid "No {} here"
+msgstr ""
+
+#: server.py:145
+msgid "Attacked {}, damage {}"
+msgstr ""
+
+#: server.py:146
+msgid "{} attacked {} with {}, damage - {}"
+msgstr ""
+
+#: server.py:148 server.py:149
+msgid "{} died"
+msgstr ""
+
+#: server.py:171
+msgid "down"
+msgstr ""
+
+#: server.py:173
+msgid "up"
+msgstr ""
+
+#: server.py:175
+msgid "right"
+msgstr ""
+
+#: server.py:177
+msgid "left"
+msgstr ""
+
+#: server.py:189
+msgid "{} moved one cell {}"
+msgstr ""
+
+#: server.py:211
+msgid "Nickname already in use"
+msgstr ""
+
+#: server.py:217
+msgid "Successful login"
+msgstr ""
+
+#: server.py:220
+msgid "{} in Dungeon!"
+msgstr ""
+
+#: server.py:242
+msgid "Set up locale: {}"
+msgstr ""
+
+#: server.py:246
+msgid "{} came out of the Dungeon :("
+msgstr ""
+

@@ -4,6 +4,8 @@ import cowsay
 import shlex
 import asyncio
 import random
+import os
+import gettext
 
 n = 10
 field = [[0 for i in range(n)] for j in range(n)]
@@ -12,6 +14,10 @@ players = {}
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 used_nicks = set()
 monster_cells = set()
+
+popath = os.path.join(os.path.dirname(__file__), 'serv_loc')
+translation = gettext.translation('serv_loc', popath, fallback=True)
+_, ngettext = translation.gettext, translation.ngettext
 
 
 class Gamer:
@@ -94,7 +100,7 @@ def move(g, dx, dy):
     param dy: type int - changes of along y coordinate
     """
     g.move_to(dx, dy)
-    ans = f'Moved to ({g.x}, {g.y})'
+    ans = _('Moved to ({}, {})').format(g.x, g.y)
     if field[g.y][g.x]:
         ans = ans + '\n' + encounter(g.x, g.y)
     return ans
@@ -111,11 +117,11 @@ def addmon(g, name, hello, x, y, hp):
     param y: type int - y coordinate of the monsters's position
     param hp: type int - health point
     """
-    ans1 = f'Added monster {name} to ({x}, {y}) saying {hello}'
+    ans1 = _('Added monster {} to ({}, {}) saying {}').format(name, x, y, hello)
     if field[y][x]:
         ans1 = ans1 + '\n' + 'Replaced the old monster'
     field[y][x] = Monster(name, x, y, hello, hp)
-    ans2 = f'{g.nick} added {name} with {hp} hp'
+    ans2 = _('{} added {} with {} hp').format(g.nick, name, hp)
     return (ans1, ans2)
 
 
@@ -129,18 +135,18 @@ def attack(g, name, weapon):
     """
     damage = weapons[weapon]
     if not field[g.y][g.x]:
-        return 'No monster here'
+        return _('No monster here')
     monster = field[g.y][g.x]
     if name != monster.name:
-        return f'No {name} here'
+        return _('No {} here').format(name)
     if monster.hp < damage:
         damage = monster.hp
     monster.hp -= damage
-    ans1 = f'Attacked {monster.name}, damage {damage}'
-    ans2 = f'{g.nick} attacked {monster.name} with {weapon}, damage - {damage}'
+    ans1 = _('Attacked {}, damage {}').format(monster.name, damage)
+    ans2 = _('{} attacked {} with {}, damage - {}').format(g.nick, monster.name, weapon, damage)
     if monster.hp == 0:
-        ans1 = ans1 + '\n' + f'{monster.name} died'
-        ans2 = ans2 + '\n' + f'{monster.name} died'
+        ans1 = ans1 + '\n' + _('{} died').format(monster.name)
+        ans2 = ans2 + '\n' + _('{} died').format(monster.name)
         field[g.y][g.x] = 0
     else:
         ans1 = ans1 + '\n' + f'{monster.name} now has {monster.hp}'
@@ -162,13 +168,13 @@ async def monster_wandering():
         movement = ''
         match [dx, dy]:
             case [0, 1]:
-                movement = 'down'
+                movement = _('down')
             case [0, -1]:
-                movement = 'up'
+                movement = _('up')
             case [1, 0]:
-                movement = 'right'
+                movement = _('right')
             case [-1, 0]:
-                movement = 'left'
+                movement = _('left')
         while field[(old_y + dy) % n][(old_x + dx) % n]:
             old_x, old_y = monsters[random.randint(0, len(monster_cells) - 1)]
             monster = field[old_y][old_x]
@@ -180,7 +186,7 @@ async def monster_wandering():
         monster_cells.remove((old_x, old_y))
         monster_cells.add((new_x, new_y))
         for p in players.keys():
-            ans = f'{monster.name} moved one cell {movement}'
+            ans = _('{} moved one cell {}').format(monster.name, movement)
             if p.x == new_x and p.y == new_y:
                 ans = ans + '\n' + encounter(p.x, p.y)
             await players[p].put(ans)
@@ -202,16 +208,16 @@ async def Dungeon(reader, writer):
                 match command:
                     case ['login', nick]:
                         if nick in used_nicks:
-                            await players[player].put('Nickname already in use')
+                            await players[player].put(_('Nickname already in use'))
                         else:
                             used_nicks.add(nick)
                             me = Gamer(nick)
                             players[me] = players.pop(player)
                             player = me
-                            await players[player].put('Successful login')
+                            await players[player].put(_('Successful login'))
                             for p in players.keys():
                                 if p != player:
-                                    await players[p].put(f'{player.nick} in Dungeon!')
+                                    await players[p].put(_('{} in Dungeon!').format(player.nick))
                     case ['move', x, y]:
                         await players[p].put(move(player, int(x), int(y)))
                     case ['addmon', name, hello, x, y, hp]:
@@ -233,11 +239,11 @@ async def Dungeon(reader, writer):
                                 await players[p].put(player.nick + ': ' + msg)
                     case ['locale', loc]:
                         player.locale = loc
-                        await players[player].put('Set up locale: {}'.format(loc))
+                        await players[player].put(_('Set up locale: {}').format(loc))
                     case ['exit']:
                         await players[player].put('exit')
                         for p in players.keys():
-                            await players[p].put(f'{player.nick} came out of the Dungeon :(')
+                            await players[p].put(_('{} came out of the Dungeon :(').format(player.nick))
                         used_nicks.remove(player.nick)
                     case _:
                         await players[player].put('<<< error >>>')
