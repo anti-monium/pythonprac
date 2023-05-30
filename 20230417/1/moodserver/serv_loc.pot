@@ -1,0 +1,106 @@
+# Translations template for PROJECT.
+# Copyright (C) 2023 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2023-05-29 22:56+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: server.py:103
+msgid "Moved to ({}, {})"
+msgstr "Переход на ({}, {})"
+
+#: server.py:120
+msgid "Added monster {} to ({}, {}) saying {}"
+msgstr "Добавлен монстр {} на ({}, {}) говорящий {}"
+
+#: server.py:122
+msgid "Replaced the old monster"
+msgstr "Замена прошлого монстра"
+
+#: server.py:124
+msgid "{} added {} with {} hp"
+msgstr "{} добавил {} с {} оз"
+
+#: server.py:138
+msgid "No monster here"
+msgstr "Здесь нет монстра"
+
+#: server.py:141
+msgid "No {} here"
+msgstr "Здесь нет {}"
+
+#: server.py:145
+msgid "Attacked {}, damage {}"
+msgstr "Атакован {}, урон - {}"
+
+#: server.py:146
+msgid "{} attacked {} with {}, damage - {}"
+msgstr "{} атаковал {} с помощью {}, урон - {}"
+
+#: server.py:148 server.py:149
+msgid "{} died"
+msgstr "{} умер"
+
+#: server.py:152 server.py:154
+msgid "{} now has {} health point"
+msgid_plural "{} now has {} health points"
+msgstr[0] "У {} теперь {} очков здоровья"
+msgstr[1] "У {} теперь {} очка здоровья"
+msgstr[2] "У {} теперь {} очков здоровья"
+
+#: server.py:184
+msgid "down"
+msgstr "вниз"
+
+#: server.py:186
+msgid "up"
+msgstr "вверх"
+
+#: server.py:188
+msgid "right"
+msgstr "вправо"
+
+#: server.py:190
+msgid "left"
+msgstr "влево"
+
+#: server.py:191
+msgid "{} moved one cell {}"
+msgstr "{} переместился на клетку {}"
+
+#: server.py:213
+msgid "Nickname already in use"
+msgstr "Псевдоним уже используется"
+
+#: server.py:219
+msgid "Successful login"
+msgstr "Успешная регистрация"
+
+#: server.py:222
+msgid "{} in Dungeon!"
+msgstr "{} в подземелье!"
+
+#: server.py:245
+msgid "Set up locale: {}"
+msgstr "Установлен язык: {}"
+
+#: server.py:249
+msgid "{} came out of the Dungeon :("
+msgstr "{} ушёл из подземелья :("
+
+#: server.py:252
+msgid "<<< error >>>"
+msgstr "<<< ошибка >>>"
+
