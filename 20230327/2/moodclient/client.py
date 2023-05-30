@@ -8,6 +8,7 @@ import readline
 weapons = {'sword': 10, 'spear': 15, 'axe': 20}
 custom_cows = ['jgsbat']
 n = 10
+thread_alive = True
 
 
 def request(s):
@@ -128,7 +129,6 @@ def start(nickname):
         if ans != 'Nickname already in use':
             cmdline = Cli_Dungeon(completekey='tab')
             reciever = threading.Thread(target=recieve)
-            thread_alive = True
             reciever.start()
             cmdline.cmdloop()
         dungeon_socket.close()

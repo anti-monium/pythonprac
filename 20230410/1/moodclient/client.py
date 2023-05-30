@@ -117,10 +117,14 @@ class Cli_Dungeon(cmd.Cmd):
         request(f'sayall {arg}')
         
     def do_locale(self, arg):
-        if arg != 'en' and arg != 'ru':
-            print('Invalid arguments')
+        if arg == 'en':
+            arg = 'en_US.UTF-8'
+        elif arg == 'ru':
+            arg = 'ru_RU.UTF-8'
         else:
-            request(f'locale {arg}')
+            print('Invalid arguments')
+            return
+        request(f'locale {arg}')
 
     def do_exit(self, arg):
         global dungeon_socket, thread_alive

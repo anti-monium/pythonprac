@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-04-11 11:30+0300\n"
+"POT-Creation-Date: 2023-05-29 22:56+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,73 +19,88 @@ msgstr ""
 
 #: server.py:103
 msgid "Moved to ({}, {})"
-msgstr ""
+msgstr "Переход на ({}, {})"
 
 #: server.py:120
 msgid "Added monster {} to ({}, {}) saying {}"
-msgstr ""
+msgstr "Добавлен монстр {} на ({}, {}) говорящий {}"
+
+#: server.py:122
+msgid "Replaced the old monster"
+msgstr "Замена прошлого монстра"
 
 #: server.py:124
 msgid "{} added {} with {} hp"
-msgstr ""
+msgstr "{} добавил {} с {} оз"
 
 #: server.py:138
 msgid "No monster here"
-msgstr ""
+msgstr "Здесь нет монстра"
 
 #: server.py:141
 msgid "No {} here"
-msgstr ""
+msgstr "Здесь нет {}"
 
 #: server.py:145
 msgid "Attacked {}, damage {}"
-msgstr ""
+msgstr "Атакован {}, урон - {}"
 
 #: server.py:146
 msgid "{} attacked {} with {}, damage - {}"
-msgstr ""
+msgstr "{} атаковал {} с помощью {}, урон - {}"
 
 #: server.py:148 server.py:149
 msgid "{} died"
-msgstr ""
+msgstr "{} умер"
 
-#: server.py:171
+#: server.py:152 server.py:154
+msgid "{} now has {} health point"
+msgid_plural "{} now has {} health points"
+msgstr[0] "У {} теперь {} очков здоровья"
+msgstr[1] "У {} теперь {} очка здоровья"
+msgstr[2] "У {} теперь {} очков здоровья"
+
+#: server.py:184
 msgid "down"
-msgstr ""
+msgstr "вниз"
 
-#: server.py:173
+#: server.py:186
 msgid "up"
-msgstr ""
+msgstr "вверх"
 
-#: server.py:175
+#: server.py:188
 msgid "right"
-msgstr ""
+msgstr "вправо"
 
-#: server.py:177
+#: server.py:190
 msgid "left"
-msgstr ""
+msgstr "влево"
 
-#: server.py:189
+#: server.py:191
 msgid "{} moved one cell {}"
-msgstr ""
+msgstr "{} переместился на клетку {}"
 
-#: server.py:211
+#: server.py:213
 msgid "Nickname already in use"
-msgstr ""
+msgstr "Псевдоним уже используется"
 
-#: server.py:217
+#: server.py:219
 msgid "Successful login"
-msgstr ""
+msgstr "Успешная регистрация"
 
-#: server.py:220
+#: server.py:222
 msgid "{} in Dungeon!"
-msgstr ""
+msgstr "{} в подземелье!"
 
-#: server.py:242
+#: server.py:245
 msgid "Set up locale: {}"
-msgstr ""
+msgstr "Установлен язык: {}"
 
-#: server.py:246
+#: server.py:249
 msgid "{} came out of the Dungeon :("
-msgstr ""
+msgstr "{} ушёл из подземелья :("
+
+#: server.py:252
+msgid "<<< error >>>"
+msgstr "<<< ошибка >>>"
 

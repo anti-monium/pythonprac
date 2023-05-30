@@ -10,7 +10,6 @@ import sys
 import os
 sys.path.append(os.path.abspath('..'))
 
-
 project = 'MOOD'
 copyright = '2023, Maria Golubkova'
 author = 'Maria Golubkova'
