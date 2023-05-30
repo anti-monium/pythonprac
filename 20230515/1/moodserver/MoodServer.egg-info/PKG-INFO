@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: MoodServer
+Version: 0.0.1
+Summary: Server for MOOD
+Author-email: Maria Golubkova <s02200353@gse.cs.msu.ru>
+Project-URL: repository, https://github.com/anti-monium/pythonprac
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.10

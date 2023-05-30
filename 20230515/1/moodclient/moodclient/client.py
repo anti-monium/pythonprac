@@ -11,12 +11,6 @@ n = 10
 thread_alive = True
 cmdline = None
 
-
-def request(s):
-    global cmdline
-    cmdline.dungeon_socket.send((s + '\n').encode())
-
-
 def recieve():
     global cmdline, thread_alive
     while thread_alive:
@@ -45,18 +39,22 @@ class Cli_Dungeon(cmd.Cmd):
                 reciever = threading.Thread(target=recieve)
                 reciever.start()
                 self.cmdloop()
+                
+    def request(self, s):
+        global cmdline
+        cmdline.dungeon_socket.send((s + '\n').encode())
 
     def do_up(self, arg):
-        request('move 0 -1')
+        self.request('move 0 -1')
 
     def do_down(self, arg):
-        request('move 0 1')
+        self.request('move 0 1')
 
     def do_left(self, arg):
-        request('move -1 0')
+        self.request('move -1 0')
 
     def do_right(self, arg):
-        request('move 1 0')
+        self.request('move 1 0')
 
     def do_addmon(self, arg):
         arg = shlex.split(arg)
@@ -88,7 +86,7 @@ class Cli_Dungeon(cmd.Cmd):
         if x < 0 or x > n - 1 or y < 0 or y > n - 1:
             print('Invalid arguments. Field size is 10x10')
             return
-        request(f'addmon {name} \'{hello}\' {x} {y} {hp}')
+        self.request(f'addmon {name} \'{hello}\' {x} {y} {hp}')
 
     def do_attack(self, arg):
         arg = shlex.split(arg)
@@ -111,7 +109,7 @@ class Cli_Dungeon(cmd.Cmd):
             if weapon not in weapons.keys():
                 print('Unknown weapon')
                 return
-        request(f'attack {name} {weapon}')
+        self.request(f'attack {name} {weapon}')
 
     def complete_attack(self, prefix, line, start, end):
         line = shlex.split(line)
@@ -127,7 +125,7 @@ class Cli_Dungeon(cmd.Cmd):
                     if name.startswith(prefix)]
 
     def do_sayall(self, arg):
-        request(f'sayall {arg}')
+        self.request(f'sayall {arg}')
         
     def do_locale(self, arg):
         if arg == 'en':
@@ -137,11 +135,11 @@ class Cli_Dungeon(cmd.Cmd):
         else:
             print('Invalid arguments')
             return
-        request(f'locale {arg}')
+        self.request(f'locale {arg}')
 
     def do_exit(self, arg):
         global cmdline, thread_alive
-        request('exit')
+        self.request('exit')
         thread_alive = False
         cmdline.dungeon_socket.close()
         return True

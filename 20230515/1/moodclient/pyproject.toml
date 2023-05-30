@@ -1,0 +1,22 @@
+[project]
+name = "MoodClient"
+version = "0.0.1"
+description = "Client for MOOD"
+requires-python = ">=3.10"
+authors = [{name = "Maria Golubkova", email = "s02200353@gse.cs.msu.ru"}]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+]
+
+dependencies = ["python-cowsay>=1.1.0", "pyreadline3"]
+
+[project.urls]
+repository = "https://github.com/anti-monium/pythonprac"
+
+[build-system]
+requires = ["alabaster", "Babel", "build", "doit", "flake8", "pybabel", "pycodestyle", "pydocstyle", "pyflakes", "python-cowsay", "setuptools", "Sphinx"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+moodclient = "moodclient"
