@@ -11,7 +11,7 @@ def task_test():
 def task_html():
     return {
         'actions': [
-            'make html',
+            'sphinx-build -M html docs/source docs/build'
             ],
         }
 
